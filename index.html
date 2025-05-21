@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>ByteBuy</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+		/>
+		<link rel="stylesheet" href="style.css" />
+		<style>
+			#specsModal .modal-content {
+				background: #181c1f;
+				color: #e6faff;
+				border-radius: 18px;
+				border: 2px solid #00ffcc;
+				box-shadow: 0 0 32px 0 #00ffcc44;
+				animation: modalFadeIn 0.5s cubic-bezier(0.4, 2, 0.6, 1);
+				max-width: 600px;  
+			}
+			#specsModal .modal-header,
+			#specsModal .modal-footer {
+				border: none;
+				background: transparent;
+			}
+			#specsModal .modal-title {
+				color: #00ffcc;
+				font-weight: 700;
+				letter-spacing: 1px;
+				font-size: 1.5rem; 
+			}
+			#specsModal .btn-close {
+				filter: invert(1) brightness(2);
+			}
+			#specsModal .list-group-item {
+				background: #23282c;
+				color: #e6faff;
+				border: none;
+				border-radius: 8px;
+				margin-bottom: 8px; 
+				box-shadow: 0 1px 6px #00ffcc22;
+				transition: background 0.2s;
+				padding: 12px 16px; 
+				font-size: 1.1rem; 
+			}
+			#specsModal .list-group-item span.fw-bold {
+				color: #00ffcc;
+				font-size: 1.1rem;
+			}
+			#specsModal .btn-secondary {
+				background: #00ffcc;
+				color: #181c1f;
+				border: none;
+				font-weight: 600;
+				transition: background 0.2s, color 0.2s;
+				font-size: 1.1rem; 
+				padding: 8px 20px; 
+			}
+			#specsModal .btn-secondary:hover {
+				background: #00e6b3;
+				color: #fff;
+			}
+			
+			@keyframes modalFadeIn {
+				from {
+					transform: scale(0.92) translateY(40px);
+					opacity: 0;
+				}
+				to {
+					transform: scale(1) translateY(0);
+					opacity: 1;
+				}
+			}
+			
+			#specsModal.fade:not(.show) .modal-dialog {
+				transition: transform 0.4s cubic-bezier(0.4, 2, 0.6, 1), opacity 0.4s;
+				transform: scale(0.92) translateY(40px);
+				opacity: 0;
+			}
+			
+			#specsModal .modal-body {
+				padding: 20px;
+			}
+			#specsModal .list-group {
+				margin-bottom: 0;
+			}
+			#specsModal .list-group-item span:first-child {
+				font-weight: 500;
+				margin-right: 15px;
+			}
+			#specsModal .list-group-item span:last-child {
+				text-align: right;
+				min-width: 200px;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="particle-bg-canvas"></canvas>
+		<header class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3">
+			<div class="container-fluid justify-content-center">
+				<a
+					class="navbar-brand d-flex align-items-center ms-4 me-lg-5"
+					href="#home"
+					style="cursor: pointer"
+				>
+					<img
+						src="img/logo.png"
+						alt="ByteBuy Logo"
+						class="logo-img me-2"
+						style="
+							height: 140px;
+							width: auto;
+							object-fit: contain;
+							transition: transform 0.3s;
+						"
+					/>
+				</a>
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#navbarNav"
+					aria-controls="navbarNav"
+					aria-expanded="false"
+					aria-label="Переключить навигацию"
+				>
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div
+					class="collapse navbar-collapse justify-content-center"
+					id="navbarNav"
+				>
+					<ul class="navbar-nav mx-auto mb-2 mb-lg-0" style="gap: 20px">
+						<li class="nav-item">
+							<a
+								class="nav-link active"
+								aria-current="page"
+								href="index.html#home"
+								>Главная</a
+							>
+						</li>
+						<li class="nav-item"></li>
+						<li class="nav-item">
+							<a class="nav-link" href="cart.html">
+								Корзина <span class="cart-count" id="cart-count">0</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="contact.html#contacts">Контакты</a>
+						</li>
+					</ul>
+					<form class="d-flex me-3 position-relative" role="search">
+						<input
+							class="form-control me-2"
+							type="search"
+							placeholder="Поиск"
+							aria-label="Поиск"
+							id="main-search-input"
+							autocomplete="off"
+						/>
+						<button
+							class="btn btn-outline-secondary"
+							type="submit"
+							aria-label="Поиск"
+						>
+							<i class="fas fa-search"></i>
+						</button>
+					</form>
+					<div class="d-flex align-items-center">
+						<a
+							href="https://instagram.com"
+							target="_blank"
+							class="text-secondary me-2"
+							aria-label="Instagram"
+							><i class="fab fa-instagram fa-lg"></i
+						></a>
+						<a
+							href="https://t.me/Avat1na"
+							target="_blank"
+							class="text-secondary"
+							aria-label="Telegram"
+							><i class="fab fa-telegram fa-lg"></i
+						></a>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<div id="sidebarFilter" class="sidebar-filter bg-dark text-white p-4">
+			<div class="d-flex justify-content-between align-items-center mb-3">
+				<h5 class="mb-0">Фильтр</h5>
+				<button
+					type="button"
+					id="sidebarClose"
+					class="btn btn-sm btn-outline-light"
+					aria-label="Закрыть фильтр"
+				>
+					<i class="fas fa-times"></i>
+				</button>
+			</div>
+			<form id="mainFilterForm">
+				<div class="mb-4">
+					<label class="form-label">Цена (тг)</label>
+					<div class="d-flex align-items-center gap-2 mb-2">
+						<input
+							type="number"
+							id="priceMin"
+							class="form-control form-control-sm"
+							style="width: 110px"
+							min="200000"
+							max="2000000"
+							value="200000"
+						/>
+						<span class="text-secondary">—</span>
+						<input
+							type="number"
+							id="priceMax"
+							class="form-control form-control-sm"
+							style="width: 110px"
+							min="200000"
+							max="2000000"
+							value="2000000"
+						/>
+					</div>
+					<div class="d-flex justify-content-between small text-secondary mt-1">
+						<span>200 000</span>
+						<span>2 000 000</span>
+					</div>
+				</div>
+				
+				<div class="mb-4 filter-group">
+					<div class="fw-bold mb-2">Бренд</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="brandAcer" data-filter="brand" />
+						<label class="form-check-label" for="brandAcer">Acer</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="brandApple" data-filter="brand" />
+						<label class="form-check-label" for="brandApple">Apple</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="brandASUS" data-filter="brand" />
+						<label class="form-check-label" for="brandASUS">ASUS</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="brandHP" data-filter="brand" />
+						<label class="form-check-label" for="brandHP">HP</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="brandLenovo" data-filter="brand" />
+						<label class="form-check-label" for="brandLenovo">Lenovo</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="brandThundeRobot" />
+						<label class="form-check-label" for="brandThundeRobot">ThundeRobot</label>
+					</div>
+					<a href="#" class="show-more-link">Показать еще <i class="fas fa-chevron-down"></i></a>
+				</div>
+				<div class="mb-4 filter-group">
+					<div class="fw-bold mb-2">Процессор</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpu1" />
+						<label class="form-check-label" for="cpu1">AMD Ryzen 7 7735HS</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpu2" />
+						<label class="form-check-label" for="cpu2">Intel Core i5-1235U</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpu3" />
+						<label class="form-check-label" for="cpu3">Intel Core i5-12450H</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpu4" />
+						<label class="form-check-label" for="cpu4">Intel Core i5-1334U</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpu5" />
+						<label class="form-check-label" for="cpu5">Intel Core i5-13420H</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpuM1" />
+						<label class="form-check-label" for="cpuM1">Apple M1</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpuM2" />
+						<label class="form-check-label" for="cpuM2">Apple M2</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpuM3" />
+						<label class="form-check-label" for="cpuM3">Apple M3</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpuM4" />
+						<label class="form-check-label" for="cpuM4">Apple M4</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpuPro" />
+						<label class="form-check-label" for="cpuPro">Apple Pro</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpuAir" />
+						<label class="form-check-label" for="cpuAir">Apple Air</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="cpuMax" />
+						<label class="form-check-label" for="cpuMax">Apple Max</label>
+					</div>
+					<a href="#" class="show-more-link">Показать еще <i class="fas fa-chevron-down"></i></a>
+				</div>
+				<div class="mb-4 filter-group">
+					<div class="fw-bold mb-2">Размер оперативной памяти</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ram4" />
+						<label class="form-check-label" for="ram4">4 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ram8" />
+						<label class="form-check-label" for="ram8">8 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ram12" />
+						<label class="form-check-label" for="ram12">12 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ram16" />
+						<label class="form-check-label" for="ram16">16 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ram32" />
+						<label class="form-check-label" for="ram32">32 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ram36" />
+						<label class="form-check-label" for="ram36">36 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ram64" />
+						<label class="form-check-label" for="ram64">64 Гб</label>
+					</div>
+					<a href="#" class="show-more-link">Показать еще <i class="fas fa-chevron-down"></i></a>
+				</div>
+				<div class="mb-4 filter-group">
+					<div class="fw-bold mb-2">Объем накопителя</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ssd256" />
+						<label class="form-check-label" for="ssd256">256 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ssd512" />
+						<label class="form-check-label" for="ssd512">512 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ssd1000" />
+						<label class="form-check-label" for="ssd1000">1000 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ssd2000" />
+						<label class="form-check-label" for="ssd2000">2000 Гб</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="ssd5000" />
+						<label class="form-check-label" for="ssd5000">5000 Гб</label>
+					</div>
+					<a href="#" class="show-more-link">Показать еще <i class="fas fa-chevron-down"></i></a>
+				</div>
+				
+				<div class="mb-4 filter-group">
+					<div class="fw-bold mb-2">Частота обновления экрана</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="hz120" />
+						<label class="form-check-label" for="hz120">120 Гц</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="hz144" />
+						<label class="form-check-label" for="hz144">144 Гц</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="hz165" />
+						<label class="form-check-label" for="hz165">165 Гц</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="hz240" />
+						<label class="form-check-label" for="hz240">240 Гц</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="hz60" />
+						<label class="form-check-label" for="hz60">60 Гц</label>
+					</div>
+					<a href="#" class="show-more-link">Показать еще <i class="fas fa-chevron-down"></i></a>
+				</div>
+				<!-- Фильтры из каталога ниже -->
+
+				<div class="mb-4">
+					<label class="form-label">Тип</label>
+					<div class="form-check">
+						<input
+							class="form-check-input"
+							type="radio"
+							name="typeRadio"
+							id="typeStudy"
+							value="study"
+						/>
+						<label class="form-check-label" for="typeStudy">Для учёбы</label>
+					</div>
+					<div class="form-check">
+						<input
+							class="form-check-input"
+							type="radio"
+							name="typeRadio"
+							id="typeWork"
+							value="work"
+						/>
+						<label class="form-check-label" for="typeWork">Для работы</label>
+					</div>
+					<div class="form-check">
+						<input
+							class="form-check-input"
+							type="radio"
+							name="typeRadio"
+							id="typeGames"
+							value="games"
+						/>
+						<label class="form-check-label" for="typeGames">Для игр</label>
+					</div>
+					
+				</div>
+				<div class="mb-4">
+					<label class="form-label">Акции</label>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="discount" />
+						<label class="form-check-label" for="discount">Скидки</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="sale" />
+						<label class="form-check-label" for="sale">Распродажа</label>
+					</div>
+				</div>
+				<button type="submit" class="btn btn-primary w-100 mt-2">
+					Показать
+				</button>
+			</form>
+		</div>
+		<button id="sidebarToggle" class="btn btn-primary sidebar-toggle-btn">
+			<i class="fas fa-sliders-h"></i> Фильтр
+		</button>
+
+		<section class="container my-5">
+			<h2
+				class="text-center mb-4"
+				style="
+					color: #00ffcc;
+					font-weight: 700;
+					text-shadow: 0 2px 8px rgba(0, 255, 204, 0.3);
+				"
+			>
+				Популярные ноутбуки
+			</h2>
+			<div
+				id="main-products-list"
+				class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center"
+				style="position: relative; z-index: 1"
+			>
+				<!-- Карточки ноутбуков будут подгружаться автоматически через JS -->
+			</div>
+			<!-- Пагинация -->
+			<nav
+				aria-label="Навигация по страницам"
+				class="d-flex justify-content-center mt-4"
+				style="position: relative; z-index: 1"
+			>
+				<ul class="pagination" id="main-pagination"></ul>
+			</nav>
+		</section>
+		<!-- Модальное окно для характеристик ноутбука -->
+		<div
+			class="modal fade"
+			id="specsModal"
+			tabindex="-1"
+			aria-labelledby="specsModalLabel"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="specsModalLabel">
+							Характеристики ноутбука
+						</h5>
+						<button
+							type="button"
+							class="btn-close"
+							data-bs-dismiss="modal"
+							aria-label="Закрыть"
+						></button>
+					</div>
+					<div class="modal-body">
+						<ul class="list-group" id="specsList">
+							<!-- Характеристики будут подставляться через JS -->
+						</ul>
+					</div>
+					<div class="modal-footer">
+						<button
+							type="button"
+							class="btn btn-secondary"
+							data-bs-dismiss="modal"
+						>
+							Закрыть
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="particle-bg.js"></script>
+		<script src="script.js"></script>
+		<script src="cart.js"></script>
+		<script>
+			$(document).ready(function () {
+
+				function toggleFilter(show) {
+					if (show) {
+						$('#sidebarFilter').addClass('active')
+						$('#sidebarToggle').addClass('hide')
+						$('body').css('overflow', 'hidden')
+					} else {
+						$('#sidebarFilter').removeClass('active')
+						$('#sidebarToggle').removeClass('hide')
+						$('body').css('overflow', '')
+					}
+				}
+// Обработчики событий для кнопок
+				$('#sidebarToggle').on('click', function () {
+					toggleFilter(true)
+				})
+
+				$('#sidebarClose').on('click', function () {
+					toggleFilter(false)
+				})
+
+
+				$(document).on('click', function (e) {
+					if (
+						$('#sidebarFilter').hasClass('active') &&
+						!$(e.target).closest('#sidebarFilter').length &&
+						!$(e.target).closest('#sidebarToggle').length
+					) {
+						toggleFilter(false)
+					}
+				})
+
+			
+				$('.filter-group').each(function () {
+					const $group = $(this)
+					const $checks = $group.find('.form-check')
+					const $showMore = $group.find('.show-more-link')
+
+					if ($checks.length <= 5 || !$showMore.length) return
+
+			
+					$checks.each(function (i) {
+						if (i > 4) $(this).hide()
+					})
+
+					$showMore.off('click').on('click', function (e) {
+						e.preventDefault()
+						const expanded = $group.hasClass('expanded')
+
+						if (!expanded) {
+							$checks.slideDown(300)
+							$group.addClass('expanded')
+							$showMore.html('Скрыть <i class="fas fa-chevron-up"></i>')
+						} else {
+							$checks.each(function (i) {
+								if (i > 4) $(this).slideUp(300)
+							})
+							$group.removeClass('expanded')
+							$showMore.html('Показать еще <i class="fas fa-chevron-down"></i>')
+						}
+					})
+				})
+
+				
+				$('#mainFilterForm').on('submit', function (e) {
+					e.preventDefault()
+
+					console.log('Фильтр применен')
+					toggleFilter(false)
+				})
+			})
+		</script>
+		<script>
+			$(function () {
+				const ITEMS_PER_PAGE = 16
+				let currentPage = 1
+				let allProducts = []
+
+				
+				async function loadProducts() {
+					try {
+						const response = await fetch('products.json')
+						const data = await response.json()
+						return data.products
+					} catch (error) {
+						console.error('Ошибка загрузки данных:', error)
+						return []
+					}
+				}
+
+
+				function filterProducts(products) {
+					const priceMin = parseInt($('#priceMin').val()) || 0
+					const priceMax = parseInt($('#priceMax').val()) || Infinity
+					const selectedBrands = []
+					const selectedCPUs = []
+					const selectedRAMs = []
+					const selectedSSDs = []
+					const selectedRefreshRates = []
+					const selectedTypes = []
+
+				
+					$('input[data-filter="brand"]:checked').each(function () {
+						selectedBrands.push($(this).next('label').text().trim())
+					})
+
+			
+					$('input[id^="cpu"]:checked').each(function () {
+						selectedCPUs.push($(this).next('label').text().trim())
+					})
+
+				
+					$('input[id^="ram"]:checked').each(function () {
+						selectedRAMs.push(parseInt($(this).next('label').text().trim()))
+					})
+
+					$('input[id^="ssd"]:checked').each(function () {
+						selectedSSDs.push(parseInt($(this).next('label').text().trim()))
+					})
+
+				
+					$('input[id^="hz"]:checked').each(function () {
+						selectedRefreshRates.push(
+							parseInt($(this).next('label').text().trim())
+						)
+					})
+
+	
+					$('input[name="typeRadio"]:checked').each(function () {
+						selectedTypes.push($(this).val())
+					})
+
+					return products.filter(product => {
+					
+						if (product.price < priceMin || product.price > priceMax)
+							return false
+
+		
+						if (
+							selectedBrands.length > 0 &&
+							!selectedBrands.includes(product.brand)
+						)
+							return false
+
+						
+						if (
+							selectedCPUs.length > 0 &&
+							!selectedCPUs.some(cpu => product.cpu.includes(cpu))
+						)
+							return false
+
+						
+						if (selectedRAMs.length > 0 && !selectedRAMs.includes(product.ram))
+							return false
+
+						
+						if (selectedSSDs.length > 0 && !selectedSSDs.includes(product.ssd))
+							return false
+
+						
+						if (
+							selectedRefreshRates.length > 0 &&
+							!selectedRefreshRates.includes(product.refreshRate)
+						)
+							return false
+
+				
+						if (
+							selectedTypes.length > 0 &&
+							!selectedTypes.includes(product.type)
+						)
+							return false
+
+						return true
+					})
+				}
+
+				
+				function renderProducts(products) {
+					const container = $('#main-products-list')
+					if (products.length === 0) {
+						container.html(
+							'<div class="text-center text-secondary">Нет товаров по выбранному фильтру</div>'
+						)
+						return
+					}
+
+					const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+					const endIndex = startIndex + ITEMS_PER_PAGE
+					const productsToShow = products.slice(startIndex, endIndex)
+
+					let html = ''
+					productsToShow.forEach(product => {
+						const discount = product.discount
+							? `<span class="badge bg-danger me-1">Скидка</span>`
+							: ''
+						const sale = product.sale
+							? `<span class="badge bg-warning text-dark me-1">Распродажа</span>`
+							: ''
+						const originalPrice = product.originalPrice
+							? `<div class="text-decoration-line-through text-secondary small">${product.originalPrice.toLocaleString()} ₸</div>`
+							: ''
+
+						html += `
+							<div class="col">
+								<div class="card h-100 shadow product-card position-relative" data-id="${product.id}">
+									<div class="product-img-wrap bg-dark text-center py-3" style="min-height:170px;">
+										<img src="${product.image}" alt="${product.title}" class="product-img" style="max-height:120px;max-width:90%;object-fit:contain;"/>
+									</div>
+									<div class="card-body d-flex flex-column">
+										<h5 class="card-title mb-2" style="color:#00ffcc;font-weight:600;">${product.title}</h5>
+										<div class="mb-2">
+											<span class="badge bg-dark me-1">${product.cpu}</span>
+											<span class="badge bg-dark me-1">${product.ram} ГБ</span>
+											<span class="badge bg-dark me-1">${product.ssd} ГБ</span>
+											<span class="badge bg-info text-dark">${product.type}</span>
+											${discount}
+											${sale}
+										</div>
+										<div class="mb-2 mt-auto">
+											${originalPrice}
+											<span class="product-price" style="font-size:1.2em;font-weight:700;">${product.price.toLocaleString()} ₸</span>
+										</div>
+										<div class="d-flex gap-2 mt-2">
+											<button class="btn btn-primary w-100" onclick='addToCart(${JSON.stringify(product)})'>В корзину</button>
+											<button class="btn btn-outline-info w-100 btn-specs" data-id="${product.id}">Характеристики</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						`
+					})
+					container.html(html)
+					updatePagination(products.length)
+				}
+
+	
+				function updatePagination(totalItems) {
+					const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
+					const pagination = $('#main-pagination')
+					let paginationHtml = ''
+
+					paginationHtml += `
+						<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+							<a class="page-link" href="#" data-page="${currentPage - 1}">Предыдущая</a>
+						</li>
+					`
+
+					for (let i = 1; i <= totalPages; i++) {
+						paginationHtml += `
+							<li class="page-item ${currentPage === i ? 'active' : ''}">
+								<a class="page-link" href="#" data-page="${i}">${i}</a>
+							</li>
+						`
+					}
+
+					paginationHtml += `
+						<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+							<a class="page-link" href="#" data-page="${currentPage + 1}">Следующая</a>
+						</li>
+					`
+
+					pagination.html(paginationHtml)
+
+					pagination.find('.page-link').on('click', function (e) {
+						e.preventDefault()
+						const newPage = parseInt($(this).data('page'))
+						if (
+							newPage &&
+							newPage !== currentPage &&
+							newPage > 0 &&
+							newPage <= totalPages
+						) {
+							currentPage = newPage
+							renderProducts(allProducts)
+							window.scrollTo({
+								top: $('#main-products-list').offset().top - 100,
+								behavior: 'smooth',
+							})
+						}
+					})
+				}
+
+			
+				async function initialize() {
+					allProducts = await loadProducts()
+					renderProducts(allProducts)
+
+				
+					$('.filter-group').each(function () {
+						const $group = $(this)
+						const $checks = $group.find('.form-check')
+						const $showMore = $group.find('.show-more-link')
+
+						if ($checks.length <= 5) {
+							$showMore.hide()
+							return
+						}
+
+						$checks.each(function (i) {
+							if (i > 4) $(this).hide()
+						})
+
+						$showMore.on('click', function (e) {
+							e.preventDefault()
+							const expanded = $group.hasClass('expanded')
+
+							if (!expanded) {
+								$checks.slideDown(300)
+								$group.addClass('expanded')
+								$(this).html('Скрыть <i class="fas fa-chevron-up"></i>')
+							} else {
+								$checks.each(function (i) {
+									if (i > 4) $(this).slideUp(300)
+								})
+								$group.removeClass('expanded')
+								$(this).html('Показать еще <i class="fas fa-chevron-down"></i>')
+							}
+						})
+					})
+				}
+
+				initialize()
+
+				$('#mainFilterForm input').on('change', function () {
+					currentPage = 1
+					const filteredProducts = filterProducts(allProducts)
+					renderProducts(filteredProducts)
+				})
+
+				$('#mainFilterForm').on('submit', function (e) {
+					e.preventDefault()
+					currentPage = 1
+					const filteredProducts = filterProducts(allProducts)
+					renderProducts(filteredProducts)
+					toggleFilter(false)
+				})
+
+				let allProductsCache = []
+				async function getAllProducts() {
+					if (allProductsCache.length) return allProductsCache
+					try {
+						const response = await fetch('products.json')
+						const data = await response.json()
+						allProductsCache = data.products || data
+						return allProductsCache
+					} catch (e) {
+						return []
+					}
+				}
+				$(document).on('click', '.btn-specs', async function () {
+					const id = $(this).data('id')
+					const products = await getAllProducts()
+					const product = products.find(p => p.id == id)
+					if (!product) return
+					const specs = [
+						{ label: 'Название', value: product.title },
+						{ label: 'Описание', value: product.description },
+						{ label: 'Бренд', value: product.brand },
+						{ label: 'ОС', value: product.os },
+						{ label: 'Процессор', value: product.cpu },
+						{ label: 'Оперативная память', value: product.ram + ' ГБ' },
+						{ label: 'SSD', value: product.ssd + ' ГБ' },
+						{ label: 'Экран', value: product.screen + '"' },
+						{ label: 'Частота обновления', value: product.refreshRate + ' Гц' },
+						{ label: 'Цена', value: product.price.toLocaleString() + ' ₸' },
+						product.originalPrice
+							? {
+									label: 'Старая цена',
+									value: product.originalPrice.toLocaleString() + ' ₸',
+							  }
+							: null,
+						product.discount ? { label: 'Скидка', value: 'Да' } : null,
+						product.sale ? { label: 'Распродажа', value: 'Да' } : null,
+					].filter(Boolean)
+					const $list = $('#specsList')
+					$list.empty()
+					specs.forEach(spec => {
+						$list.append(
+							`<li class="list-group-item d-flex justify-content-between align-items-center"><span>${spec.label}</span><span class="fw-bold">${spec.value}</span></li>`
+						)
+					})
+					$('#specsModal').modal('show')
+				})
+			})
+		</script>
+		</main>
+
+		<footer class="footer bg-dark text-white py-5 mt-5">
+			<div class="container">
+				<div class="row g-4">
+					<!-- О компании -->
+					<div class="col-lg-4 col-md-6">
+						<h5 class="mb-3" style="color: #00ffcc">О ByteBuy</h5>
+						<p class="text-white-50">
+							ByteBuy — ваш надежный партнер в мире технологий. Мы специализируемся на продаже качественных ноутбуков и компьютерной техники, предлагая лучшие цены и гарантированное качество.
+						</p>
+						<div class="d-flex gap-3 mt-3">
+							<a href="https://instagram.com" target="_blank" class="text-secondary" style="font-size: 1.5rem;">
+								<i class="fab fa-instagram"></i>
+							</a>
+							<a href="https://t.me/Avat1na" target="_blank" class="text-secondary" style="font-size: 1.5rem;">
+								<i class="fab fa-telegram"></i>
+							</a>
+							<a href="https://wa.me/77055718728" target="_blank" class="text-secondary" style="font-size: 1.5rem;">
+								<i class="fab fa-whatsapp"></i>
+							</a>
+						</div>
+					</div>
+					<div class="col-lg-2 col-md-6">
+						<h5 class="mb-3" style="color: #00ffcc">Навигация</h5>
+						<ul class="list-unstyled">
+							<li class="mb-2">
+								<a href="index.html#home" class="text-white-50 text-decoration-none hover-primary">Главная</a>
+							</li>
+							<li class="mb-2">
+								<a href="cart.html#cart" class="text-white-50 text-decoration-none hover-primary">Корзина</a>
+							</li>
+							<li class="mb-2">
+								<a href="contact.html#contacts" class="text-white-50 text-decoration-none hover-primary">Контакты</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<h5 class="mb-3" style="color: #00ffcc">Информация</h5>
+						<ul class="list-unstyled">
+							<li class="mb-2">
+								<a href="#" class="text-white-50 text-decoration-none hover-primary">Доставка и оплата</a>
+							</li>
+							<li class="mb-2">
+								<a href="#" class="text-white-50 text-decoration-none hover-primary">Гарантия и возврат</a>
+							</li>
+							<li class="mb-2">
+								<a href="#" class="text-white-50 text-decoration-none hover-primary">Политика конфиденциальности</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<h5 class="mb-3" style="color: #00ffcc">Контакты</h5>
+						<ul class="list-unstyled text-white-50">
+							<li class="mb-2">
+								<i class="fas fa-phone-alt me-2" style="color: #00ffcc"></i>+7 (999) 123-45-67
+							</li>
+							<li class="mb-2">
+								<i class="fas fa-envelope me-2" style="color: #00ffcc"></i>info@bytebuy.ru
+							</li>
+							<li class="mb-2">
+								<i class="fas fa-map-marker-alt me-2" style="color: #00ffcc"></i>Алматы, Казахстан
+							</li>
+							<li class="mb-2">
+								<i class="fas fa-clock me-2" style="color: #00ffcc"></i>Пн-Вс: 9:00 - 20:00
+							</li>
+						</ul>
+					</div>
+				</div>
+				<hr class="my-4" style="border-color: rgba(255,255,255,0.1)">
+				<div class="row align-items-center">
+					<div class="col-md-6 text-center text-md-start">
+						<p class="mb-0 text-white-50">&copy; 2025 ByteBuy. Я сделал этот сайт @Avat1na.</p>
+					</div>
+					<div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+						<img
+							src="img/logo.png"
+							alt="ByteBuy Logo"
+							style="height: 70px; width: auto;"
+						/>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>
